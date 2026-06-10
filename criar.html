@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0510">
+<title>Criar — Eterniza 💕</title>
+<style>
+  :root{ --rose:#ff5d8f; --rose2:#ff8fb1; --text:#fff; --muted:#caa9bb; --card:#1b0f1f; --card2:#241430; --border:#3a2440; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);
+    background:radial-gradient(900px 500px at 50% -10%, rgba(255,93,143,.22), transparent 60%),#0a0510;min-height:100vh;padding:30px 16px 70px}
+  .wrap{max-width:480px;margin:0 auto}
+  header{text-align:center;margin-bottom:22px}
+  .logo{font-size:28px;font-weight:900}.logo b{color:var(--rose)}
+  .sub{color:var(--muted);font-size:14px;margin-top:4px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:14px 0 8px}
+  label:first-child{margin-top:0}
+  input,textarea{width:100%;background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:13px;padding:13px 14px;font-size:15px;font-family:inherit}
+  input:focus,textarea:focus{outline:none;border-color:var(--rose)}
+  .row{display:flex;gap:10px}.row>div{flex:1}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:6px;opacity:.8}
+  .photos-in{display:none}
+  .drop{border:1.5px dashed var(--border);border-radius:14px;padding:22px;text-align:center;color:var(--muted);cursor:pointer;background:var(--card2)}
+  .drop:hover{border-color:var(--rose)}
+  .prev{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .prev .p{position:relative;width:64px;height:80px;border-radius:9px;overflow:hidden;border:1px solid var(--border)}
+  .prev .p img{width:100%;height:100%;object-fit:cover}
+  .prev .p span{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:18px;height:18px;font-size:12px;line-height:18px;text-align:center;cursor:pointer}
+  .btn{width:100%;background:linear-gradient(135deg,#ff5d8f,#c2407e);border:none;color:#fff;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-top:22px;box-shadow:0 10px 30px rgba(255,93,143,.35)}
+  .btn:disabled{opacity:.6;cursor:default}
+  .ok{text-align:center}
+  .ok h2{font-size:22px;margin-bottom:8px}
+  .linkbox{display:flex;gap:8px;margin:14px 0}
+  .linkbox input{font-size:13px}
+  .qr{margin:16px auto;width:200px;height:200px;background:#fff;border-radius:14px;padding:10px}
+  .qr img{width:100%;height:100%}
+  .btn.ghost{background:var(--card2);border:1px solid var(--border);box-shadow:none}
+  a.open{display:block;text-align:center;margin-top:10px;color:var(--rose2);text-decoration:none;font-weight:700}
+  .err{background:rgba(255,93,143,.12);border:1px solid rgba(255,93,143,.4);border-radius:12px;padding:12px;font-size:14px;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Eterniza <b>💕</b></div>
+    <div class="sub">Crie a página do amor de vocês em minutos</div>
+  </header>
+
+  <div id="form">
+    <div class="card">
+      <div class="row">
+        <div><label>Seu nome</label><input id="nome1" placeholder="Ex: João" autocomplete="off"></div>
+        <div><label>Nome do amor</label><input id="nome2" placeholder="Ex: Maria" autocomplete="off"></div>
+      </div>
+      <label>Quando começou essa história?</label>
+      <div class="row">
+        <div><input id="data" type="date"></div>
+        <div><input id="hora" type="time" value="20:00"></div>
+      </div>
+      <div class="hint">Vira o contador "tempo juntos" que fica girando na página 💗</div>
+    </div>
+
+    <div class="card">
+      <label>Fotos de vocês (até 5)</label>
+      <div class="drop" id="drop">📸 Toque pra escolher as fotos</div>
+      <input class="photos-in" id="fotos" type="file" accept="image/*" multiple>
+      <div class="prev" id="prev"></div>
+    </div>
+
+    <div class="card">
+      <label>Mensagem de amor</label>
+      <textarea id="msg" rows="4" placeholder="Escreva uma declaração do fundo do coração..."></textarea>
+      <label>Música de vocês <span style="font-weight:400">(opcional)</span></label>
+      <input id="musica" placeholder="Cole o link do Spotify ou YouTube">
+      <div class="hint">No Spotify: ⋯ → Compartilhar → Copiar link. A música toca na página. 🎵</div>
+    </div>
+
+    <button class="btn" id="criar" onclick="criar()">💕 Criar nossa página</button>
+    <div id="erro"></div>
+  </div>
+
+  <div class="card ok" id="sucesso" style="display:none">
+    <h2>🎉 Página criada!</h2>
+    <p style="color:var(--muted);font-size:14px">Esse é o link e o QR Code pra você presentear. Compartilhe e prepare o coração 💕</p>
+    <div class="qr" id="qr"></div>
+    <div class="linkbox"><input id="link" readonly><button class="btn ghost" style="margin:0;width:auto;padding:0 16px" onclick="copiar()">Copiar</button></div>
+    <a class="open" id="abrir" target="_blank">👀 Ver a página agora</a>
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://jjdoyotxgxdgzyqjpqzz.supabase.co';
+const SUPA_KEY='sb_publishable_14F42s5XskCh1z3HJxWw4A_DiHpcSSz';
+const BUCKET='eterniza-fotos';
+let files=[];
+
+document.getElementById('drop').onclick=()=>document.getElementById('fotos').click();
+document.getElementById('fotos').onchange=(e)=>{
+  for(const f of e.target.files){ if(files.length<5) files.push(f); }
+  renderPrev();
+};
+function renderPrev(){
+  const el=document.getElementById('prev'); el.innerHTML='';
+  files.forEach((f,i)=>{ const u=URL.createObjectURL(f); const d=document.createElement('div'); d.className='p';
+    d.innerHTML=`<img src="${u}"><span onclick="rm(${i})">×</span>`; el.appendChild(d); });
+}
+function rm(i){ files.splice(i,1); renderPrev(); }
+function slugGen(){ return Math.random().toString(36).slice(2,8)+Math.random().toString(36).slice(2,6); }
+
+async function uploadFoto(slug,f,i){
+  const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+  const path=`${slug}/${i}.${ext}`;
+  const r=await fetch(`${SUPA_URL}/storage/v1/object/${BUCKET}/${path}`,{
+    method:'POST', headers:{ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':f.type||'image/jpeg' }, body:f });
+  if(!r.ok) throw new Error('upload');
+  return `${SUPA_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+}
+
+async function criar(){
+  const nome1=val('nome1'), nome2=val('nome2'), data=val('data'), hora=val('hora')||'20:00', msg=val('msg'), musica=val('musica');
+  const erro=document.getElementById('erro'); erro.innerHTML='';
+  if(!nome1||!nome2){ erro.innerHTML='<div class="err">Preencha os dois nomes 💕</div>'; return; }
+  if(!data){ erro.innerHTML='<div class="err">Escolha a data que começou 📅</div>'; return; }
+  if(!msg){ erro.innerHTML='<div class="err">Escreva a mensagem de amor 💌</div>'; return; }
+  const btn=document.getElementById('criar'); btn.disabled=true; btn.textContent='Subindo as fotos... 📸';
+  try{
+    const slug=slugGen();
+    let fotos=[];
+    for(let i=0;i<files.length;i++){ btn.textContent=`Subindo foto ${i+1}/${files.length}... 📸`; fotos.push(await uploadFoto(slug,files[i],i)); }
+    if(!fotos.length) fotos=['https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&q=80'];
+    btn.textContent='Criando a página... 💕';
+    let musEmbed=toEmbed(musica);
+    const DATA={ nome1,nome2, inicio:`${data}T${hora}:00`, mensagem:msg, fotos, musica:musEmbed };
+    const r=await fetch(`${SUPA_URL}/rest/v1/eterniza_pages`,{ method:'POST',
+      headers:{ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':'application/json', Prefer:'return=minimal' },
+      body:JSON.stringify({ slug, data:DATA }) });
+    if(!r.ok) throw new Error('insert '+r.status);
+    const url=`${location.origin}/p.html?id=${slug}`;
+    showOk(url);
+  }catch(e){ erro.innerHTML='<div class="err">😕 Deu um erro ('+e.message+'). Tenta de novo.</div>'; btn.disabled=false; btn.textContent='💕 Criar nossa página'; }
+}
+function toEmbed(u){ if(!u) return '';
+  let m=u.match(/spotify\.com\/(?:intl-[a-z]+\/)?track\/([A-Za-z0-9]+)/); if(m) return 'https://open.spotify.com/embed/track/'+m[1];
+  m=u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_\-]+)/); if(m) return 'https://www.youtube.com/embed/'+m[1];
+  if(u.includes('spotify.com/embed')||u.includes('youtube.com/embed')) return u;
+  return ''; }
+function showOk(url){
+  document.getElementById('form').style.display='none';
+  const s=document.getElementById('sucesso'); s.style.display='';
+  document.getElementById('link').value=url;
+  document.getElementById('abrir').href=url;
+  document.getElementById('qr').innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}">`;
+}
+function copiar(){ const i=document.getElementById('link'); i.select(); navigator.clipboard.writeText(i.value); }
+function val(id){ return document.getElementById(id).value.trim(); }
+</script>
+</body>
+</html>

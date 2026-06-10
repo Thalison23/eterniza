@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0510">
+<title>Eterniza 💕</title>
+<style>
+  :root{ --rose:#ff5d8f; --rose2:#ff8fb1; --gold:#ffd479; --text:#fff; --muted:#e6c8d6; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #5a1233, transparent 60%),
+      radial-gradient(900px 600px at 50% 110%, #2a0b3d, transparent 60%),
+      #0a0510;
+    overflow-x:hidden;min-height:100vh;
+  }
+  .hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .heart{position:absolute;top:-30px;font-size:18px;animation:fall linear infinite;opacity:.8}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  .wrap{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:40px 20px 70px;text-align:center}
+  .tag{display:inline-block;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--rose2);
+    border:1px solid rgba(255,143,177,.4);border-radius:30px;padding:6px 16px;margin-bottom:24px}
+  .names{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:6px}
+  .names .amp{color:var(--rose);margin:0 6px}
+  .since{color:var(--muted);font-size:14px;margin-bottom:30px}
+  .counter-title{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--rose2);margin-bottom:14px}
+  .counter{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:38px}
+  .unit{background:rgba(255,255,255,.06);border:1px solid rgba(255,143,177,.25);border-radius:14px;
+    padding:12px 6px;min-width:62px;backdrop-filter:blur(6px)}
+  .unit .n{font-size:24px;font-weight:800;line-height:1}
+  .unit .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:5px}
+  .photos{position:relative;width:100%;aspect-ratio:4/5;border-radius:22px;overflow:hidden;margin-bottom:30px;
+    box-shadow:0 30px 70px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+  .photos img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.1s}
+  .photos img.on{opacity:1}
+  .photos .dots{position:absolute;bottom:12px;left:0;right:0;display:flex;gap:6px;justify-content:center;z-index:3}
+  .photos .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4)}
+  .photos .dots i.on{background:#fff;width:18px;border-radius:4px}
+  .msg{background:rgba(255,255,255,.05);border:1px solid rgba(255,143,177,.2);border-radius:18px;
+    padding:22px;font-size:16.5px;line-height:1.6;color:#fff;margin-bottom:28px;font-style:italic}
+  .msg::before{content:'❝';color:var(--rose);font-size:30px;display:block;line-height:0;margin-bottom:10px}
+  .music{margin-bottom:30px}
+  .music iframe{width:100%;border:none;border-radius:14px}
+  .heart-big{font-size:34px;animation:beat 1.4s ease-in-out infinite;display:inline-block}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.18)}}
+  .foot{color:var(--muted);font-size:12px;margin-top:10px;opacity:.7}
+  .foot b{color:var(--rose2)}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+<div class="wrap">
+  <div class="tag">Para sempre 💕</div>
+  <h1 class="names" id="names">João <span class="amp">❤</span> Maria</h1>
+  <div class="since" id="since">Juntos desde 14 de fevereiro de 2020</div>
+
+  <div class="counter-title">Nosso tempo juntos</div>
+  <div class="counter" id="counter"></div>
+
+  <div class="photos" id="photos"><div class="dots" id="dots"></div></div>
+
+  <div class="msg" id="msg">Desde o dia em que te conheci, minha vida ganhou cor. Você é meu hoje, meu amanhã e meu para sempre. Obrigado por cada dia ao seu lado. Te amo! 💍</div>
+
+  <div class="music" id="music"></div>
+
+  <div class="heart-big">❤️</div>
+  <div class="foot">Feito com amor no <b>Eterniza</b></div>
+</div>
+
+<script>
+// ===== DADOS (no MVP virão do Supabase / link; aqui exemplo) =====
+const DATA = window.ETERNIZA_DATA || {
+  nome1:'João', nome2:'Maria',
+  inicio:'2020-02-14T20:30:00',
+  mensagem:'Desde o dia em que te conheci, minha vida ganhou cor. Você é meu hoje, meu amanhã e meu para sempre. Obrigado por cada dia ao seu lado. Te amo! 💍',
+  fotos:[
+    'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&q=80',
+    'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80',
+    'https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=800&q=80'
+  ],
+  // embed de musica: Spotify (open.spotify.com/embed/track/ID) ou YouTube (youtube.com/embed/ID)
+  musica:'https://open.spotify.com/embed/track/3RUFExdWUNzhT07yEDufvb'
+};
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// nomes + desde
+document.getElementById('names').innerHTML = esc(DATA.nome1)+' <span class="amp">❤</span> '+esc(DATA.nome2);
+const di = new Date(DATA.inicio);
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+document.getElementById('since').textContent = 'Juntos desde '+di.getDate()+' de '+MESES[di.getMonth()]+' de '+di.getFullYear();
+document.getElementById('msg').textContent = DATA.mensagem;
+
+// contador ao vivo
+const UNITS=[['anos','y'],['meses','mo'],['dias','d'],['horas','h'],['min','m'],['seg','s']];
+function diff(){
+  const now=new Date(); let y=now.getFullYear()-di.getFullYear(), mo=now.getMonth()-di.getMonth(),
+    d=now.getDate()-di.getDate(), h=now.getHours()-di.getHours(), m=now.getMinutes()-di.getMinutes(), s=now.getSeconds()-di.getSeconds();
+  if(s<0){s+=60;m--} if(m<0){m+=60;h--} if(h<0){h+=24;d--}
+  if(d<0){ const pm=new Date(now.getFullYear(),now.getMonth(),0).getDate(); d+=pm; mo--; }
+  if(mo<0){mo+=12;y--}
+  return {anos:y,meses:mo,dias:d,horas:h,min:m,seg:s};
+}
+function renderCounter(){
+  const v=diff(); const el=document.getElementById('counter');
+  el.innerHTML=UNITS.map(([k])=>`<div class="unit"><div class="n">${v[k]}</div><div class="l">${k}</div></div>`).join('');
+}
+renderCounter(); setInterval(renderCounter,1000);
+
+// fotos carrossel
+const ph=document.getElementById('photos'), dots=document.getElementById('dots');
+(DATA.fotos||[]).forEach((src,i)=>{ const im=new Image(); im.src=src; im.className='ph'+(i===0?' on':''); ph.insertBefore(im,dots); const dt=document.createElement('i'); if(i===0)dt.className='on'; dots.appendChild(dt); });
+let pi=0; const imgs=[...ph.querySelectorAll('img')];
+if(imgs.length>1) setInterval(()=>{ imgs[pi].classList.remove('on'); dots.children[pi].classList.remove('on'); pi=(pi+1)%imgs.length; imgs[pi].classList.add('on'); dots.children[pi].classList.add('on'); },3500);
+
+// musica embed
+if(DATA.musica){ const h = DATA.musica.includes('spotify')?180:152; document.getElementById('music').innerHTML=`<iframe src="${DATA.musica}" height="${h}" allow="autoplay; encrypted-media" loading="lazy"></iframe>`; }
+
+// corações caindo
+const HE=document.getElementById('hearts'); const EMO=['❤️','💕','💖','💗','🤍'];
+for(let i=0;i<22;i++){ const s=document.createElement('div'); s.className='heart'; s.textContent=EMO[i%EMO.length];
+  s.style.left=Math.random()*100+'vw'; s.style.fontSize=(12+Math.random()*16)+'px';
+  s.style.animationDuration=(6+Math.random()*7)+'s'; s.style.animationDelay=(Math.random()*8)+'s'; HE.appendChild(s); }
+</script>
+</body>
+</html>

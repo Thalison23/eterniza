@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0510">
+<title>Eterniza 💕 — Eternize o amor de vocês</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#fff;text-align:center;
+    background:radial-gradient(900px 600px at 50% -10%, #5a1233, transparent 60%),#0a0510;
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;overflow:hidden}
+  .heart{position:fixed;top:-30px;animation:fall linear infinite;opacity:.7}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  h1{font-size:42px;font-weight:900;letter-spacing:-1px;margin-bottom:8px;position:relative;z-index:2}
+  h1 b{color:#ff5d8f}
+  .tag{color:#ff8fb1;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;position:relative;z-index:2}
+  p{color:#e6c8d6;font-size:17px;max-width:420px;line-height:1.6;margin-bottom:14px;position:relative;z-index:2}
+  .proof{color:#caa9bb;font-size:13px;margin-bottom:30px;position:relative;z-index:2}
+  a.btn{background:linear-gradient(135deg,#ff5d8f,#c2407e);color:#fff;text-decoration:none;font-weight:800;font-size:17px;
+    padding:17px 34px;border-radius:16px;box-shadow:0 12px 34px rgba(255,93,143,.4);position:relative;z-index:2}
+  .off{margin-top:22px;color:#ffd479;font-size:13px;font-weight:700;position:relative;z-index:2}
+</style>
+</head>
+<body>
+  <div class="tag">O presente que emociona 💕</div>
+  <h1>Eternize o amor<br>de vocês <b>para sempre</b></h1>
+  <p>Crie uma página linda com fotos, música e o contador do tempo de vocês juntos. Pronta em minutos pra dar de presente.</p>
+  <div class="proof">💍 Um presente que ela nunca vai esquecer</div>
+  <a class="btn" href="criar.html">Criar nossa página 💕</a>
+  <div class="off">🔥 Oferta de Dia dos Namorados</div>
+<script>
+  const EMO=['❤️','💕','💖','💗','🤍'];
+  for(let i=0;i<18;i++){ const s=document.createElement('div'); s.className='heart'; s.textContent=EMO[i%EMO.length];
+    s.style.left=Math.random()*100+'vw'; s.style.fontSize=(12+Math.random()*16)+'px';
+    s.style.animationDuration=(6+Math.random()*7)+'s'; s.style.animationDelay=(Math.random()*8)+'s'; document.body.appendChild(s); }
+</script>
+</body>
+</html>
