@@ -21,6 +21,11 @@
   input:focus,textarea:focus{outline:none;border-color:var(--rose)}
   .row{display:flex;gap:10px}.row>div{flex:1}
   .hint{font-size:11.5px;color:var(--muted);margin-top:6px;opacity:.8}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 10px}
+  .chip{background:var(--card2);border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:7px 12px;font-size:12px;cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--rose);color:#fff}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#ff5d8f,#c2407e);color:#fff;font-weight:700;padding:14px 22px;border-radius:14px;box-shadow:0 12px 34px rgba(255,93,143,.5);opacity:0;transition:.35s;z-index:50;font-size:14px}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
   .photos-in{display:none}
   .drop{border:1.5px dashed var(--border);border-radius:14px;padding:22px;text-align:center;color:var(--muted);cursor:pointer;background:var(--card2)}
   .drop:hover{border-color:var(--rose)}
@@ -55,10 +60,7 @@
         <div><label>Nome do amor</label><input id="nome2" placeholder="Ex: Maria" autocomplete="off"></div>
       </div>
       <label>Quando começou essa história?</label>
-      <div class="row">
-        <div><input id="data" type="date"></div>
-        <div><input id="hora" type="time" value="20:00"></div>
-      </div>
+      <input id="data" type="date">
       <div class="hint">Vira o contador "tempo juntos" que fica girando na página 💗</div>
     </div>
 
@@ -71,8 +73,9 @@
 
     <div class="card">
       <label>Mensagem de amor</label>
-      <textarea id="msg" rows="4" placeholder="Escreva uma declaração do fundo do coração..."></textarea>
-      <label>Música de vocês <span style="font-weight:400">(opcional)</span></label>
+      <div class="chips" id="sugestoes"></div>
+      <textarea id="msg" rows="4" placeholder="Escreva uma declaração do fundo do coração... ou toque numa sugestão acima 👆"></textarea>
+      <label>Música de vocês 🎵</label>
       <input id="musica" placeholder="Cole o link do Spotify ou YouTube">
       <div class="hint">No Spotify: ⋯ → Compartilhar → Copiar link. A música toca na página. 🎵</div>
     </div>
@@ -82,10 +85,10 @@
   </div>
 
   <div class="card ok" id="sucesso" style="display:none">
-    <h2>🎉 Página criada!</h2>
-    <p style="color:var(--muted);font-size:14px">Esse é o link e o QR Code pra você presentear. Compartilhe e prepare o coração 💕</p>
+    <h2>🎉 Tá pronto!</h2>
+    <p style="color:var(--muted);font-size:14px">Copie o link (ou mostre o QR Code) e <b style="color:#fff">mande pro seu amor</b>. Prepare o coração 💕</p>
     <div class="qr" id="qr"></div>
-    <div class="linkbox"><input id="link" readonly><button class="btn ghost" style="margin:0;width:auto;padding:0 16px" onclick="copiar()">Copiar</button></div>
+    <div class="linkbox"><input id="link" readonly><button class="btn ghost" style="margin:0;width:auto;padding:0 16px" onclick="copiar()">📋 Copiar</button></div>
     <a class="open" id="abrir" target="_blank">👀 Ver a página agora</a>
   </div>
 </div>
@@ -118,8 +121,23 @@ async function uploadFoto(slug,f,i){
   return `${SUPA_URL}/storage/v1/object/public/${BUCKET}/${path}`;
 }
 
+const SUGESTOES=[
+  'Você é o melhor presente que a vida me deu. Te amo pra sempre! 💕',
+  'Com você, todo dia é Dia dos Namorados. Meu amor é seu. 💍',
+  'Meu lugar favorito no mundo é do seu lado. ❤️',
+  'Obrigado(a) por ser meu hoje, meu amanhã e meu para sempre. 💕',
+  'Te escolho todos os dias, e escolheria de novo a vida inteira. 🥰'
+];
+function renderSugestoes(){
+  const el=document.getElementById('sugestoes');
+  el.innerHTML='';
+  SUGESTOES.forEach(s=>{ const b=document.createElement('button'); b.className='chip'; b.textContent='💬 '+s.slice(0,22)+'...';
+    b.onclick=()=>{ document.getElementById('msg').value=s; }; el.appendChild(b); });
+}
+renderSugestoes();
+
 async function criar(){
-  const nome1=val('nome1'), nome2=val('nome2'), data=val('data'), hora=val('hora')||'20:00', msg=val('msg'), musica=val('musica');
+  const nome1=val('nome1'), nome2=val('nome2'), data=val('data'), msg=val('msg'), musica=val('musica');
   const erro=document.getElementById('erro'); erro.innerHTML='';
   if(!nome1||!nome2){ erro.innerHTML='<div class="err">Preencha os dois nomes 💕</div>'; return; }
   if(!data){ erro.innerHTML='<div class="err">Escolha a data que começou 📅</div>'; return; }
@@ -132,7 +150,7 @@ async function criar(){
     if(!fotos.length) fotos=['https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&q=80'];
     btn.textContent='Criando a página... 💕';
     let musEmbed=toEmbed(musica);
-    const DATA={ nome1,nome2, inicio:`${data}T${hora}:00`, mensagem:msg, fotos, musica:musEmbed };
+    const DATA={ nome1,nome2, inicio:`${data}T00:00:00`, mensagem:msg, fotos, musica:musEmbed };
     const r=await fetch(`${SUPA_URL}/rest/v1/eterniza_pages`,{ method:'POST',
       headers:{ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':'application/json', Prefer:'return=minimal' },
       body:JSON.stringify({ slug, data:DATA }) });
@@ -153,7 +171,8 @@ function showOk(url){
   document.getElementById('abrir').href=url;
   document.getElementById('qr').innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}">`;
 }
-function copiar(){ const i=document.getElementById('link'); i.select(); navigator.clipboard.writeText(i.value); }
+function copiar(){ const i=document.getElementById('link'); i.select(); navigator.clipboard.writeText(i.value).then(()=>toast('✅ Link copiado! Manda pro seu amor 💕')); }
+function toast(txt){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); } t.textContent=txt; void t.offsetWidth; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2800); }
 function val(id){ return document.getElementById(id).value.trim(); }
 </script>
 </body>
