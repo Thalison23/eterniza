@@ -36,6 +36,7 @@
   .msg{background:rgba(255,255,255,.05);border:1px solid rgba(255,143,177,.2);border-radius:18px;padding:22px;font-size:16.5px;line-height:1.6;color:#fff;margin-bottom:28px;font-style:italic}
   .msg::before{content:'❝';color:var(--rose);font-size:30px;display:block;line-height:0;margin-bottom:10px}
   .music{margin-bottom:30px}
+  .music .mt{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--rose2);margin-bottom:12px}
   .music iframe{width:100%;border:none;border-radius:14px}
   .heart-big{font-size:34px;animation:beat 1.4s ease-in-out infinite;display:inline-block}
   @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.18)}}
@@ -103,7 +104,7 @@ function render(DATA){
   const imgs=[...ph.querySelectorAll('img')]; let pi=0;
   if(imgs.length>1) setInterval(()=>{ imgs[pi].classList.remove('on'); dots.children[pi].classList.remove('on'); pi=(pi+1)%imgs.length; imgs[pi].classList.add('on'); dots.children[pi].classList.add('on'); },3500);
 
-  if(DATA.musica){ const h=DATA.musica.includes('spotify')?152:152; document.getElementById('music').innerHTML=`<iframe src="${esc(DATA.musica)}" height="${h}" allow="autoplay; encrypted-media" loading="lazy"></iframe>`; }
+  if(DATA.musica){ const h=DATA.musica.includes('spotify')?152:200; document.getElementById('music').innerHTML=`<div class="mt">🎵 Nossa música</div><iframe src="${esc(DATA.musica)}" height="${h}" allow="autoplay; encrypted-media"></iframe>`; }
 }
 
 const HE=document.getElementById('hearts'); const EMO=['❤️','💕','💖','💗','🤍'];
