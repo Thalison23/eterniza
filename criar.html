@@ -155,8 +155,10 @@ async function criar(){
       headers:{ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':'application/json', Prefer:'return=minimal' },
       body:JSON.stringify({ slug, data:DATA }) });
     if(!r.ok) throw new Error('insert '+r.status);
-    const url=`${location.origin}/p.html?id=${slug}`;
-    showOk(url);
+    btn.textContent='Quase lá... 💕';
+    localStorage.setItem('eterniza_slug', slug);
+    localStorage.setItem('eterniza_data', JSON.stringify(DATA));
+    window.location.href='preview.html';
   }catch(e){ erro.innerHTML='<div class="err">😕 Deu um erro ('+e.message+'). Tenta de novo.</div>'; btn.disabled=false; btn.textContent='💕 Criar nossa página'; }
 }
 function toEmbed(u){ if(!u) return '';

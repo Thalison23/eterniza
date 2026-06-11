@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0510">
+<title>Sua página tá pronta 💕 — Eterniza</title>
+<style>
+  :root{ --rose:#ff5d8f; --rose2:#ff8fb1; --gold:#ffd479; --text:#fff; --muted:#e6c8d6; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);
+    background:radial-gradient(1200px 700px at 50% -10%, #5a1233, transparent 60%),
+      radial-gradient(900px 600px at 50% 110%, #2a0b3d, transparent 60%),#0a0510;
+    overflow-x:hidden;min-height:100vh}
+  .hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .heart{position:absolute;top:-30px;font-size:18px;animation:fall linear infinite;opacity:.8}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  .wrap{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:34px 20px 160px;text-align:center}
+  .ready{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+    border:1px solid rgba(255,212,121,.4);border-radius:30px;padding:6px 16px;margin-bottom:18px}
+  .names{font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:6px}
+  .names .amp{color:var(--rose);margin:0 6px}
+  .since{color:var(--muted);font-size:14px;margin-bottom:26px}
+  .counter-title{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--rose2);margin-bottom:14px}
+  .counter{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+  .unit{background:rgba(255,255,255,.06);border:1px solid rgba(255,143,177,.25);border-radius:14px;padding:12px 6px;min-width:62px;backdrop-filter:blur(6px)}
+  .unit .n{font-size:24px;font-weight:800;line-height:1}
+  .unit .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:5px}
+  /* área borrada (o "miolo" que só libera pagando) */
+  .locked{position:relative;border-radius:22px;overflow:hidden;margin-bottom:10px}
+  .locked .blurred{filter:blur(11px) saturate(1.1);transform:scale(1.04);pointer-events:none;user-select:none}
+  .photos{position:relative;width:100%;aspect-ratio:4/5;border-radius:22px;overflow:hidden;margin-bottom:18px;
+    box-shadow:0 0 0 3px rgba(255,93,143,.7),0 0 35px rgba(255,93,143,.3),0 30px 70px rgba(0,0,0,.5)}
+  .photos img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .msg{background:rgba(255,255,255,.05);border:1px solid rgba(255,143,177,.2);border-radius:18px;padding:22px;font-size:16.5px;line-height:1.6;color:#fff;font-style:italic;text-align:left}
+  .msg::before{content:'❝';color:var(--rose);font-size:30px;display:block;line-height:0;margin-bottom:10px}
+  .lockover{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    background:linear-gradient(180deg, rgba(10,5,16,.45), rgba(10,5,16,.65));text-align:center;padding:46px 20px 20px}
+  .lockover .ico{font-size:44px;margin-bottom:10px}
+  .lockover .t{font-size:17px;font-weight:800;max-width:280px;line-height:1.4}
+  .lockover .s{font-size:13px;color:var(--muted);margin-top:8px;max-width:280px}
+  /* barra de pagamento fixa */
+  .paybar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(15,7,22,.92);backdrop-filter:blur(10px);
+    border-top:1px solid rgba(255,143,177,.25);padding:14px 16px calc(14px + env(safe-area-inset-bottom));}
+  .paybar .inner{max-width:520px;margin:0 auto}
+  .priceline{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
+  .priceline .old{color:var(--muted);text-decoration:line-through;font-size:15px}
+  .priceline .new{color:#fff;font-size:24px;font-weight:900}
+  .priceline .new b{color:var(--gold)}
+  .priceline .pix{background:rgba(0,200,120,.15);border:1px solid rgba(0,200,120,.5);color:#5ef0b0;font-size:11px;font-weight:800;padding:4px 9px;border-radius:20px}
+  .paybtn{display:block;width:100%;background:linear-gradient(135deg,#ff5d8f,#c2407e);border:none;color:#fff;border-radius:14px;
+    padding:17px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(255,93,143,.4);text-decoration:none;text-align:center}
+  .paynote{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;opacity:.85}
+  .loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:var(--rose2);font-size:15px;z-index:5}
+  .nodata{max-width:340px;margin:80px auto;text-align:center;color:var(--muted)}
+  .nodata a{color:var(--rose2);font-weight:700}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+<div class="loading" id="loading">💕 Preparando sua página...</div>
+
+<div class="wrap" id="wrap" style="display:none">
+  <div class="ready">✨ Sua página tá pronta!</div>
+  <h1 class="names" id="names"></h1>
+  <div class="since" id="since"></div>
+  <div class="counter-title">O tempo de vocês juntos</div>
+  <div class="counter" id="counter"></div>
+
+  <div class="locked">
+    <div class="blurred">
+      <div class="photos" id="photos"></div>
+      <div class="msg" id="msg"></div>
+    </div>
+    <div class="lockover">
+      <div class="ico">🔒💕</div>
+      <div class="t">Suas fotos e sua declaração já estão aqui dentro</div>
+      <div class="s">Libere pra ver completa, com música, e enviar pro seu amor 💌</div>
+    </div>
+  </div>
+</div>
+
+<div class="nodata" id="nodata" style="display:none">
+  <p>Ops, não achei os dados da sua página. 💔</p>
+  <p style="margin-top:10px"><a href="criar.html">← Criar minha página</a></p>
+</div>
+
+<div class="paybar" id="paybar" style="display:none">
+  <div class="inner">
+    <div class="priceline">
+      <span class="old">R$ 47</span>
+      <span class="new">R$ <b>27</b></span>
+      <span class="pix">⚡ PIX na hora</span>
+    </div>
+    <a class="paybtn" id="paybtn" href="#">💕 Liberar minha página agora</a>
+    <div class="paynote">🔒 Pagamento seguro • Acesso imediato após o PIX • Garantia de 7 dias</div>
+  </div>
+</div>
+
+<script>
+// ====== CONFIG ======
+const KIWIFY='https://pay.kiwify.com.br/oSFC1q6'; // checkout Eterniza R$27
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let DATA=null;
+try{ DATA=JSON.parse(localStorage.getItem('eterniza_data')||'null'); }catch(e){}
+
+if(!DATA){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('nodata').style.display='';
+}else{
+  render(DATA);
+}
+
+function render(DATA){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wrap').style.display='';
+  document.getElementById('paybar').style.display='';
+  document.getElementById('names').innerHTML = esc(DATA.nome1)+' <span class="amp">❤</span> '+esc(DATA.nome2);
+  const di=new Date(DATA.inicio);
+  document.getElementById('since').textContent='Juntos desde '+di.getDate()+' de '+MESES[di.getMonth()]+' de '+di.getFullYear();
+  document.getElementById('msg').textContent=DATA.mensagem;
+
+  const UNITS=[['anos'],['meses'],['dias'],['horas'],['min'],['seg']];
+  function diff(){ const now=new Date(); let y=now.getFullYear()-di.getFullYear(),mo=now.getMonth()-di.getMonth(),d=now.getDate()-di.getDate(),h=now.getHours()-di.getHours(),m=now.getMinutes()-di.getMinutes(),s=now.getSeconds()-di.getSeconds();
+    if(s<0){s+=60;m--}if(m<0){m+=60;h--}if(h<0){h+=24;d--}if(d<0){const pm=new Date(now.getFullYear(),now.getMonth(),0).getDate();d+=pm;mo--}if(mo<0){mo+=12;y--}
+    return {anos:y,meses:mo,dias:d,horas:h,min:m,seg:s}; }
+  function rc(){ const v=diff(); document.getElementById('counter').innerHTML=UNITS.map(([k])=>`<div class="unit"><div class="n">${v[k]}</div><div class="l">${k}</div></div>`).join(''); }
+  rc(); setInterval(rc,1000);
+
+  const ph=document.getElementById('photos');
+  const first=(DATA.fotos&&DATA.fotos[0])||'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&q=80';
+  const im=new Image(); im.src=first; ph.appendChild(im);
+}
+
+document.getElementById('paybtn').onclick=function(e){
+  e.preventDefault();
+  // o slug já está salvo no localStorage; sucesso.html lê de lá após o pagamento
+  window.location.href=KIWIFY;
+};
+
+const HE=document.getElementById('hearts'); const EMO=['❤️','💕','💖','💗','🤍'];
+for(let i=0;i<20;i++){ const s=document.createElement('div'); s.className='heart'; s.textContent=EMO[i%EMO.length]; s.style.left=Math.random()*100+'vw'; s.style.fontSize=(12+Math.random()*16)+'px'; s.style.animationDuration=(6+Math.random()*7)+'s'; s.style.animationDelay=(Math.random()*8)+'s'; HE.appendChild(s); }
+</script>
+</body>
+</html>
