@@ -112,12 +112,37 @@ function renderPrev(){
 function rm(i){ files.splice(i,1); renderPrev(); }
 function slugGen(){ return Math.random().toString(36).slice(2,8)+Math.random().toString(36).slice(2,6); }
 
+// reduz a foto antes de subir: máx 1280px, JPEG ~82%. Se algo falhar, usa a original.
+async function comprimir(file){
+  if(!file || !file.type || !file.type.startsWith('image/')) return file;
+  try{
+    let bitmap;
+    try{ bitmap=await createImageBitmap(file,{imageOrientation:'from-image'}); }
+    catch(_){ bitmap=await createImageBitmap(file); }
+    const MAX=1280; let w=bitmap.width, h=bitmap.height;
+    const escala=Math.min(1, MAX/Math.max(w,h));
+    w=Math.round(w*escala); h=Math.round(h*escala);
+    const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(bitmap,0,0,w,h);
+    if(bitmap.close) bitmap.close();
+    const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.82));
+    return (blob && blob.size < file.size) ? blob : file;
+  }catch(e){ return file; }
+}
+
 async function uploadFoto(slug,f,i){
-  const ext=(f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+  const small=await comprimir(f);
+  const jpeg=(small.type==='image/jpeg');
+  const ext=jpeg?'jpg':((f.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg');
   const path=`${slug}/${i}.${ext}`;
-  const r=await fetch(`${SUPA_URL}/storage/v1/object/${BUCKET}/${path}`,{
-    method:'POST', headers:{ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':f.type||'image/jpeg' }, body:f });
-  if(!r.ok) throw new Error('upload');
+  const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),45000);
+  try{
+    const r=await fetch(`${SUPA_URL}/storage/v1/object/${BUCKET}/${path}`,{
+      method:'POST', signal:ctrl.signal,
+      headers:{ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':small.type||'image/jpeg' }, body:small });
+    if(!r.ok) throw new Error('upload '+r.status);
+  }catch(e){ throw new Error(e.name==='AbortError'?'foto demorou demais (internet lenta)':'upload'); }
+  finally{ clearTimeout(to); }
   return `${SUPA_URL}/storage/v1/object/public/${BUCKET}/${path}`;
 }
 
