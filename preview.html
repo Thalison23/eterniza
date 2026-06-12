@@ -44,6 +44,9 @@
   .paybar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(15,7,22,.92);backdrop-filter:blur(10px);
     border-top:1px solid rgba(255,143,177,.25);padding:14px 16px calc(14px + env(safe-area-inset-bottom));}
   .paybar .inner{max-width:520px;margin:0 auto}
+  .nmrbanner{text-align:center;font-size:12.5px;font-weight:800;color:#ffe3a8;background:rgba(255,212,121,.1);
+    border:1px solid rgba(255,212,121,.35);border-radius:12px;padding:7px 10px;margin-bottom:10px}
+  .nmrbanner b{color:#fff;font-variant-numeric:tabular-nums}
   .priceline{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
   .priceline .old{color:var(--muted);text-decoration:line-through;font-size:15px}
   .priceline .new{color:#fff;font-size:24px;font-weight:900}
@@ -88,9 +91,10 @@
 
 <div class="paybar" id="paybar" style="display:none">
   <div class="inner">
+    <div class="nmrbanner">🔥 Oferta de Dia dos Namorados • acaba em <b id="cd">--:--:--</b></div>
     <div class="priceline">
       <span class="old">R$ 47</span>
-      <span class="new">R$ <b>27</b></span>
+      <span class="new">R$ <b>17</b></span>
       <span class="pix">⚡ PIX na hora</span>
     </div>
     <a class="paybtn" id="paybtn" href="#">💕 Liberar minha página agora</a>
@@ -100,7 +104,7 @@
 
 <script>
 // ====== CONFIG ======
-const KIWIFY='https://pay.kiwify.com.br/oSFC1q6'; // checkout Eterniza R$27
+const KIWIFY='https://pay.kiwify.com.br/oSFC1q6'; // checkout Eterniza R$17 (Namorados)
 const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -140,6 +144,20 @@ document.getElementById('paybtn').onclick=function(e){
   // o slug já está salvo no localStorage; sucesso.html lê de lá após o pagamento
   window.location.href=KIWIFY;
 };
+
+// contador de urgência: tempo até a meia-noite de hoje
+(function(){
+  const el=document.getElementById('cd'); if(!el) return;
+  function tick(){
+    const now=new Date();
+    const fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59);
+    let s=Math.max(0,Math.floor((fim-now)/1000));
+    const h=String(Math.floor(s/3600)).padStart(2,'0'); s%=3600;
+    const m=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0');
+    el.textContent=`${h}:${m}:${ss}`;
+  }
+  tick(); setInterval(tick,1000);
+})();
 
 const HE=document.getElementById('hearts'); const EMO=['❤️','💕','💖','💗','🤍'];
 for(let i=0;i<20;i++){ const s=document.createElement('div'); s.className='heart'; s.textContent=EMO[i%EMO.length]; s.style.left=Math.random()*100+'vw'; s.style.fontSize=(12+Math.random()*16)+'px'; s.style.animationDuration=(6+Math.random()*7)+'s'; s.style.animationDelay=(Math.random()*8)+'s'; HE.appendChild(s); }
